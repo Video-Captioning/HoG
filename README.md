@@ -18,13 +18,14 @@ Begin with a bunch of image files, some showing a frisbee and some not. For this
 
 ## Class label file
 Create a text file to hold class label information as follows:
-________________
-frame_03091.png
-frame_03121.png
-frame_03151.png _disc_
-frame_03181.png
-frame_03211.png _disc_
-frame_03241.png
+|file name       |keyword(s)|
+|----------------|----------|
+|frame_03091.png |          |
+|frame_03121.png |          |
+|frame_03151.png | _disc_   |
+|frame_03181.png |          |
+|frame_03211.png | _disc_   |
+|frame_03241.png |          |
 ...
 
 ## Data Partitioning
