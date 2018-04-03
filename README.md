@@ -1,36 +1,78 @@
-# Project Overview
-## Video-Captioning
---------
+# Histograms of Oriented Gradients (HoG)
+---
+title: HoG
+author: ~
+date: '2018-04-03'
+slug: ultimate-captioning-disc-detector-HoG
+categories: ["projects"]
+tags: ["image processing"]
+draft: no
+header:
+  caption:
+  image:
+  preview: yes
+---
 
-To illustrate the concepts, let's focus on this specific application:
+## Data Source
 
-* The sport of Ultimate Frisbee, specifically women's ultimate
-* Interesting moments: 
-  - During Play: Pulls, Catches, Layouts
-  - Between Plays: Scoreboard, High-Fives, Fans in Stands, Miscellaneous
+3471 images, excerpted from 2015bsVriot.mp4, roughly 1 frame per second for about 1 hour.
 
---------
+## Data Preparation
 
-## Inspiration
-During MLConf Seattle May 19, 2017, Serena Yeung's presentation, 'Towards Scaling Video Understanding' piqued my curiosity.
-Soon after the conference, I read a paper she co-authored, 'End-to-end learning of action detection from frame glimpses in videos'.
+Partition the labeled data into two sets: Some portion of the data for *training* and the rest for *testing*. For example: 40% training
 
-The main idea is
-  an observation network encodes visual representations of video frames
-  a recurrent network sequentially processes these observations and decides both which frame to observe next and when to emit a prediction.
+```{bash, eval = FALSE, echo=TRUE}
+cd /Users/Karl/Dropbox/Projects/Video-Captioning
+sh ./partition_data_two_class.sh disc labeled_3471.txt 0.40
 
-  Beginning at an arbitrarily selected point in the video, repeat the following:
-    examine a few frames to find out which actions are occurring at that point in time
-    decide where to look next, i.e., ahead or behind, and by how far
-  Once the prediction confidence has improved sufficiently, output the prediction
-  
---------
-A few techniques will be needed in order to achieve our goal: 
-* [Video Excerpting](Techniques-Excerpt.md)
-* [Feature Extraction](Techniques-Feature-Extract.md)
-* [Image Classification](Techniques-Image-Classify.md)
-* Learning Where to Look
-* Captioning
+```
 
-See [Experiments](Experiment-List.md)
-# HoG
+After partitioning the data, extract HoG (Histograms of Oriented Gradients) features using various numbers of cells and 9 bins:
+
+```{bash, eval = FALSE, echo=TRUE}
+cd ./disc40
+~/Dropbox/Projects/Video-Captioning/disc40
+sh ../hog.sh ../data/2_images/ 4 9
+sh ../hog.sh ../data/2_images/ 5 9
+sh ../hog.sh ../data/2_images/ 6 9
+sh ../hog.sh ../data/2_images/ 7 9
+sh ../hog.sh ../data/2_images/ 8 9
+sh ../hog.sh ../data/2_images/ 9 9
+```
+
+Re-Partition the data, this time using 60% for training:
+
+```{bash, eval = FALSE, echo=TRUE}
+cd /Users/Karl/Dropbox/Projects/Video-Captioning
+sh ./partition_data_two_class.sh disc labeled_3471.txt 0.60
+
+Once again extract HoG features using various numbers of cells and 9 bins:
+
+```{bash, eval = FALSE, echo=TRUE}
+cd ./disc60
+~/Dropbox/Projects/Video-Captioning/disc40
+sh ../hog.sh ../data/2_images/ 4 9
+sh ../hog.sh ../data/2_images/ 5 9
+sh ../hog.sh ../data/2_images/ 6 9
+sh ../hog.sh ../data/2_images/ 7 9
+sh ../hog.sh ../data/2_images/ 8 9
+sh ../hog.sh ../data/2_images/ 9 9
+```
+
+```{bash, eval = FALSE, echo=TRUE}
+# R linear_SVM.R
+microbenchmark( (results <- update( './disc40/cells4_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc40/cells5_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc40/cells6_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc40/cells7_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc40/cells8_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc40/cells9_bins9/' )), times=1L )
+
+microbenchmark( (results <- update( './disc60/cells4_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc60/cells5_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc60/cells6_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc60/cells7_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc60/cells8_bins9/' )), times=1L )
+microbenchmark( (results <- update( './disc60/cells9_bins9/' )), times=1L )
+
+```
