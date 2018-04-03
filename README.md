@@ -27,8 +27,7 @@ Create a text file to hold class label information as follows:
 |frame_03181.png |          |
 |frame_03211.png | _disc_   |
 |frame_03241.png |          |
-
-...
+|...| |
 
 ## Data Partitioning
 Partition the labeled data into two sets: Some portion of the data for *training* and the rest for *testing*. For example: 40% training
