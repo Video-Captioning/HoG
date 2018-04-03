@@ -34,7 +34,8 @@ Partition the labeled data into two sets: Some portion of the data for *training
 
 ```{bash}
 cd path-to-project
-sh ./partition_data_two_class.sh _disc_ labeled_data.txt 0.40
+#                                keyword      datafile     training fraction
+sh ./partition_data_two_class.sh  disc    labeled_data.txt 0.40
 ```
 
 After partitioning the data, extract HoG (Histograms of Oriented Gradients) features using various numbers of cells and bins:
