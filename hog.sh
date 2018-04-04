@@ -12,17 +12,18 @@
 #   partitioned data resides in four files, named:
 #     test_pos.csv, test_neg.csv, train_pos.csv, and train_neg.csv
 #   images files are available at the image_path, matching the names in the partitioned data files
-
+#
 # Call hog.sh from within the subdirectory that contains partitioned data, i.e.,
 #   if the project is in:
-#     ~/Dropbox/Projects/Video-Captioning
+#     PROJECTPATH
 #
 #   and the data have been partitioned using:
-#     sh ./partition_data_two_class.sh disc labeled_3471.txt 0.60
+#     ./partition_data_two_class.sh KEYWORD CLASS_LABELS TRAINING_FRACTION
 #
 #   then the clumps of data will reside at a location determined
-#   by the keyword, 'disc' and the training fraction, '0.60':
-#     ~/Dropbox/Projects/Video-Captioning/disc60
+#   by the keyword and the training fraction, '0.60':
+#     PROJECTPATH/KEYWORDTRAINING_FRACTION
+#
 #
 # PROCESSING:
 # - Verify that the correct number of parameters are available
