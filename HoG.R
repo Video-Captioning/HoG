@@ -108,7 +108,6 @@ if( is.directory( input_file ) ){
           , IMAGE_FILE_EXTENSIONS
         ))
 
-      }
     }
   }
 }
