@@ -30,14 +30,10 @@
 #     + Issue usage instructions, if needed
 # - Describe the parameters
 # - Create an appropriately-named subdirectory if needed
-# - Produce Histograms of Oriented Gradients for each of the four clumps of data:
-#     + training positive examples
-#     + training negative examples
-#     + testing  positive examples
-#     + testing  negative examples
+# - Produce Histograms of Oriented Gradients
 #
 # OUTPUT:
-#   Produce Histograms of Oriented Gradients for each of the four clumps of data:
+#   Save the histograms for each of the four clumps of data in a subdirectory:
 #     training_pos.txt      testing_pos.txt
 #     training_neg.txt      testing_neg.txt
 
