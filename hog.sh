@@ -37,8 +37,11 @@
 #     + testing  negative examples
 #
 # OUTPUT:
+#   Produce Histograms of Oriented Gradients for each of the four clumps of data:
+#     training_pos.txt      testing_pos.txt
+#     training_neg.txt      testing_neg.txt
 
-
+# --- Check command-line arguments, and give usage instructions, if warranted
 if (( $# != 3 ))
 then
   echo 
@@ -55,9 +58,12 @@ echo
 image_path=$1
 cells=$2
 bins=$3
+
+# --- The results will be stored in a subdirectory having a name
+# that is a concatenation of the number of cells and bins. If the
+# subdirectory already exists, use it; otherwise, create it.
 destination=cells"$cells"_bins"$bins"
 echo "$destination"
-
 [ -d $destination ]&&echo "Using existing subdirectory" $destination||(echo "Creating subdirectory " $destination; mkdir $destination)
 
 # --- Produce Histograms of Oriented Gradients for each of the four clumps of data:
