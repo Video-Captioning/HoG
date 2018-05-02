@@ -3,6 +3,8 @@
 # Reference https://cran.r-project.org/web/packages/OpenImageR/vignettes/The_OpenImageR_package.html
 # Reference https://gist.github.com/louist87/9248952#file-image-findhogfeatures
 
+cat(sprintf('--------\nHoG.R\n\n'))
+
 require( purrr )
 start_time <- Sys.time()  
  
@@ -25,8 +27,12 @@ cfg[[ 4 ]] <- list(
   , help = 'Transformation to apply'
 )
 cfg[[ 5 ]] <- list(
-    c( '-d', '--data_dir' ), default = './data/2_images/', type = 'character'
+    c( '-d', '--data_path' ), default = './data/2_images/', type = 'character'
   , help = 'Data Directory'
+)
+cfg[[ 6 ]] <- list(
+    c( '-i', '--input' ), default = '', type = 'character'
+  , help = 'Input file'
 )
 options <- lapply(
     cfg
@@ -37,34 +43,18 @@ options <- lapply(
 IMAGE_FILE_EXTENSIONS <- '.(png|jpeg|tiff|tif)$'
 LIST_FILE_EXTENSIONS  <- '.(txt|tab|csv|tsv)$'
 
-# --- Get command line options and print help, if warranted.
-parser <- optparse::OptionParser(usage = "%prog [options] file", option_list = options )
-
-tryCatch(
-    arguments <- optparse::parse_args( parser, positional_arguments = 1 )
-  , error = function(e){
-      system( './HoG.R -h' )
-      stop('\n-----------------\nSee Usage, above.\n-----------------\n\n./HoG.R -h')
-    }
-)
-  
-opt        <- arguments$options
-input_file <- arguments$args
-print( input_file )
-
-# --- File not found
-if( !file.exists( input_file ))
-  stop( 'Specified file does not exist' )
-  
 # --- Histogram of Oriented Gradients (HoG) function
+# Length of resulting vector is bins x cells x cells
 HoG <- function( f, bins=3, cells=6 ){
-  # Length of resulting vector is bins x cells x cells
-  input_image <- OpenImageR::readImage( f )  
-  normalized_image <- input_image * 255
-  hog <- OpenImageR::HOG( normalized_image, cells  = cells, orientations  =  bins )
-  # Tick the progress bar forward 1 tick after each completed action
-  pb$tick()
-  data.frame( matrix( hog, nrow  =  1 ) )
+  #cat( sprintf( 'Creating HoG for %s\n', f ))
+  if( file.exists( f )){
+    input_image <- OpenImageR::readImage( f )  
+    normalized_image <- input_image * 255
+    hog <- OpenImageR::HOG( normalized_image, cells  = cells, orientations  =  bins )
+    # Tick the progress bar forward 1 tick after each completed action
+    pb$tick()
+    data.frame( matrix( hog, nrow  =  1 ) )
+  }
 }
 
 get_im     <- function( f ) OpenImageR::readImage( f )
@@ -81,36 +71,36 @@ transformation_A <- function( f ){
 }
 
 # --- One file, or many?
-is.directory <- function( f ) as.logical( file.info( f )[ 'isdir' ] )
+is.directory <- function( f ){
+  as.logical( file.info( f )[ 'isdir' ] )
+}
+
+show_configuration <- function( items ){
+  cat( sprintf( '\n--- options ---\n'))
+  print( t(t(opt)))
+}
 
 # -----------------------------------------------
 #     M  A  I  N
-# -----------------------------------------------
+# -----------------------------------------------  
 
-if( is.directory( input_file ) ){
+# --- Get command line options and print help, if warranted.
+parser <- optparse::OptionParser(usage = "%prog [options] file", option_list = options )
 
-  # Input is a directory; Grab all the images
-  input_file <- dir( path  = input_file, pattern = IMAGE_FILE_EXTENSIONS, full.names = TRUE )
-  cat(sprintf( 'Found %d files\n', length( input_file )))
-} else {
+#tryCatch(
+#    arguments <- optparse::parse_args( parser, positional_arguments = TRUE )
+#  , error = function(e){
+#      cat( sprintf( 'abrupt end'))
+#      arguments <- 'none'
+#    }
+#)
+  
+arguments <- optparse::parse_args(parser, positional_arguments = TRUE )
+opt <- arguments$options
+##input_file <- arguments$args
+input_file <- opt$input
 
-  # Input is NOT a directory...
-  if( !any( grepl( tools::file_ext( input_file ), IMAGE_FILE_EXTENSIONS ) ) ){
-
-    # Input is NOT an image file
-    if(
-       !any( grepl( tools::file_ext( input_file ), LIST_FILE_EXTENSIONS ) )
-      ){
-
-       # Input is not a list of file names, either
-       stop( sprintf(
-            'File must be a list of file names or one of these types: %s\n'
-          , IMAGE_FILE_EXTENSIONS
-        ))
-
-    }
-  }
-}
+show_configuration( opt )
 
 if( any( grepl( tools::file_ext( input_file ), LIST_FILE_EXTENSIONS ) ) ){
 
@@ -121,8 +111,9 @@ if( any( grepl( tools::file_ext( input_file ), LIST_FILE_EXTENSIONS ) ) ){
   x <- strsplit( readLines( input_file ), " ")  #[[1]]
   # Keep the first element of each line and reduce to a vector
   x <- x %>% map_chr( 1 )
+ 
   # Prepend data directory
-  input_file <- paste0( opt$data_dir, x )
+  input_file <- paste0( opt$data_path, x )
 }
 
 if( !length( input_file ) )
@@ -157,9 +148,4 @@ end_time   <- Sys.time()
 time_spent <- end_time - start_time
 cat( sprintf( 'Time elapsed: ' ))
 print( time_spent )
-
-# --- Tests
-# ./HoG.R  --cells=4 ./data/2_images/frame_00031.png
-# ./HoG.R  --cells=4 ./data/0_training/fansinstands/
-# ./HoG.R  -o test.csv --cells=4 ./data/0_training/fansinstands/
-# ./HoG.R  -t 'a' ./data/2_images/frame_00031.png
+cat(sprintf('--------\nEND HoG.R\n\n'))
