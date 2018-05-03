@@ -13,7 +13,43 @@ header:
   preview: yes
 ---
 
+# Typical usage 
+Call baseline_detector.sh, which is a convenience wrapper for HoG.R
+
 # Example
+```{bash, eval=FALSE}
+# 80% of images for training; 20% for testing
+#
+#  eXtract HoG features ---+  +--- classify images
+# partition the data ---+  |  |    +--- training fraction
+#                       |  |  |    |       +--- keyword
+#      the script       |  |  |    |       |          +--- class label file
+#          |            |  |  |    |       |          |
+# ____________________ __ __ __ _______ _______ ___________________
+./baseline_detector.sh -p -x -c -f 0.80 -k disc -l labeled_3471.txt
+```
+
+Once partitioned dataset has been created, additional HoG features can be extracted and used for classification
+```{bash, eval=FALSE}
+# Initiate feature extraction
+#
+# number of cells (windows)---+     +--- number of bins
+#    eXtract features ---+    |     |       +--- keyword
+#      the script        |    |     |       |        +--- training fraction
+#          |             |    |     |       |        |
+# ____________________  __  ____  _____  _______  _______
+./baseline_detector.sh  -x  -w 8  -b 15  -k disc  -f 0.80
+
+# For classification only:
+./baseline_detector.sh  -c  -w 8  -b 15  -k disc  -f 0.80
+
+# Feature extraction and image classification can be requested together:
+./baseline_detector.sh  -x -c  -w 8  -b 15  -k disc  -f 0.80
+```
+
+***
+
+# Stand-Alone Example
 Begin with a bunch of image files, some showing a frisbee and some not. For this example, we are classifying images based on whether they depict a disc or not. To use some other class label, simply substitute your own keyword for _disc_
 
 ## Class label file
