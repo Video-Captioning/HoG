@@ -14,7 +14,7 @@ header:
 ---
 
 # Typical usage 
-Call baseline_detector.sh, which is a convenience wrapper for HoG.R
+Call object_detector.sh, which is a convenience wrapper for HoG.R
 
 # Example
 ```{bash, eval=FALSE}
@@ -26,7 +26,7 @@ Call baseline_detector.sh, which is a convenience wrapper for HoG.R
 #      the script       |  |  |    |       |          +--- class label file
 #          |            |  |  |    |       |          |
 # ____________________ __ __ __ _______ _______ ___________________
-./baseline_detector.sh -p -x -c -f 0.80 -k disc -l labeled_3471.txt
+./object_detector.sh -p -x -c -f 0.80 -k disc -l labeled_3471.txt
 ```
 
 Once partitioned dataset has been created, additional HoG features can be extracted and used for classification
@@ -38,13 +38,13 @@ Once partitioned dataset has been created, additional HoG features can be extrac
 #      the script        |    |     |       |        +--- training fraction
 #          |             |    |     |       |        |
 # ____________________  __  ____  _____  _______  _______
-./baseline_detector.sh  -x  -w 8  -b 15  -k disc  -f 0.80
+./object_detector.sh  -x  -w 8  -b 15  -k disc  -f 0.80
 
 # For classification only:
-./baseline_detector.sh  -c  -w 8  -b 15  -k disc  -f 0.80
+./object_detector.sh  -c  -w 8  -b 15  -k disc  -f 0.80
 
 # Feature extraction and image classification can be requested together:
-./baseline_detector.sh  -x -c  -w 8  -b 15  -k disc  -f 0.80
+./object_detector.sh  -x -c  -w 8  -b 15  -k disc  -f 0.80
 ```
 
 ***
